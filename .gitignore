@@ -1,0 +1,15 @@
+ref
+build
+models
+gpt
+PPTs
+.cache
+kernel.elf
+.cache
+compiler_commands.json
+fs.img
+premodels
+origin-models
+tools/export_qwen.py
+tools/export_smollm.py
+tools/__pycache__
