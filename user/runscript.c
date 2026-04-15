@@ -175,7 +175,60 @@ int main(int argc, char *argv[]) {
     }
 
     const char *script = argv[1];
-    //TODO: 补充处理脚本的核心逻辑，注意使用上述定义的各项工具函数
-    
+    int fd = open(script, O_RDONLY);
+    if (fd < 0) {
+        exit(1);
+    }
+
+    struct line_reader lr;
+    lr_init(&lr, fd);
+
+    char line[MAXLINE];
+    char path[MAXLINE];
+    char *cmdv[MAXARGS];
+
+    for (;;) {
+        int n = lr_readline(&lr, line, sizeof(line));
+        if (n == 0) {
+            break;
+        }
+        if (n < 0) {
+            close(fd);
+            exit(1);
+        }
+
+        int narg = prepare_argv(line, cmdv, MAXARGS);
+        if (narg < 0) {
+            close(fd);
+            exit(1);
+        }
+        if (narg == 0) {
+            continue;
+        }
+
+        if (makepath(cmdv[0], path, sizeof(path)) < 0) {
+            close(fd);
+            exit(1);
+        }
+        cmdv[0] = path;
+
+        int pid = fork();
+        if (pid < 0) {
+            close(fd);
+            exit(1);
+        }
+        if (pid == 0) {
+            exec(path, cmdv);
+            exit(1);
+        }
+
+        int status = 0;
+        if (wait(&status) < 0 || status != 0) {
+            close(fd);
+            exit(1);
+        }
+    }
+
+    close(fd);
     exit(0);
 }
