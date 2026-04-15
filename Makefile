@@ -149,7 +149,8 @@ UPROGS = \
 	ln \
 	touch \
 	runscript \
-	rs_status 
+	rs_status \
+	gpu_stats 
 UCOMMON = \
 	$(UBUILD)/entry.o \
 	$(UBUILD)/syscall.o \
@@ -231,7 +232,8 @@ fsimg: $(UELFS) tools/mkfsimg.py
 		--add ln=$(UBUILD)/ln.elf \
 		--add touch=$(UBUILD)/touch.elf \
 		--add runscript=$(UBUILD)/runscript.elf \
-		--add rs_status=$(UBUILD)/rs_status.elf 
+		--add rs_status=$(UBUILD)/rs_status.elf \
+		--add gpu_stats=$(UBUILD)/gpu_stats.elf 
 
 qemu-gdb: kernel.elf $(COMDB) fsimg
 	$(QEMU) $(QEMUOPTS) $(QEMUFSOPTS) $(QEMUGDB)
